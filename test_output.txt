@@ -1,0 +1,189 @@
+INCLUDING DEPENDENCY MoveStdlib
+INCLUDING DEPENDENCY Sui
+BUILDING loot_box
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+   [0m[36m┌─[0m .\sources\loot_box.move:12:23
+   [0m[36m│[0m
+[0m[36m12[0m [0m[36m│[0m     use sui::object::{[0m[33mSelf[0m, UID, ID};
+   [0m[36m│[0m                       [0m[33m^^^^[0m [0m[33mUnnecessary alias 'object' for module 'sui::object'. This alias is provided by default[0m
+   [0m[36m│[0m
+   [0m[36m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+   [0m[36m┌─[0m .\sources\loot_box.move:12:29
+   [0m[36m│[0m
+[0m[36m12[0m [0m[36m│[0m     use sui::object::{Self, [0m[33mUID[0m, ID};
+   [0m[36m│[0m                             [0m[33m^^^[0m [0m[33mUnnecessary alias 'UID' for module member 'sui::object::UID'. This alias is provided by default[0m
+   [0m[36m│[0m
+   [0m[36m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+   [0m[36m┌─[0m .\sources\loot_box.move:12:34
+   [0m[36m│[0m
+[0m[36m12[0m [0m[36m│[0m     use sui::object::{Self, UID, [0m[33mID[0m};
+   [0m[36m│[0m                                  [0m[33m^^[0m [0m[33mUnnecessary alias 'ID' for module member 'sui::object::ID'. This alias is provided by default[0m
+   [0m[36m│[0m
+   [0m[36m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+   [0m[36m┌─[0m .\sources\loot_box.move:13:27
+   [0m[36m│[0m
+[0m[36m13[0m [0m[36m│[0m     use sui::tx_context::{[0m[33mSelf[0m, TxContext};
+   [0m[36m│[0m                           [0m[33m^^^^[0m [0m[33mUnnecessary alias 'tx_context' for module 'sui::tx_context'. This alias is provided by default[0m
+   [0m[36m│[0m
+   [0m[36m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+   [0m[36m┌─[0m .\sources\loot_box.move:13:33
+   [0m[36m│[0m
+[0m[36m13[0m [0m[36m│[0m     use sui::tx_context::{Self, [0m[33mTxContext[0m};
+   [0m[36m│[0m                                 [0m[33m^^^^^^^^^[0m [0m[33mUnnecessary alias 'TxContext' for module member 'sui::tx_context::TxContext'. This alias is provided by default[0m
+   [0m[36m│[0m
+   [0m[36m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+   [0m[36m┌─[0m .\sources\loot_box.move:14:14
+   [0m[36m│[0m
+[0m[36m14[0m [0m[36m│[0m     use sui::[0m[33mtransfer[0m;
+   [0m[36m│[0m              [0m[33m^^^^^^^^[0m [0m[33mUnnecessary alias 'transfer' for module 'sui::transfer'. This alias is provided by default[0m
+   [0m[36m│[0m
+   [0m[36m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09011][0m[1m: unused constant[0m
+   [0m[36m┌─[0m .\sources\loot_box.move:21:11
+   [0m[36m│[0m
+[0m[36m21[0m [0m[36m│[0m     const [0m[33mENotAdmin[0m: u64 = 1;
+   [0m[36m│[0m           [0m[33m^^^^^^^^^[0m [0m[33mThe constant 'ENotAdmin' is never used. Consider removing it.[0m
+   [0m[36m│[0m
+   [0m[36m=[0m This warning can be suppressed with '#[allow(unused_const)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[Lint W99003][0m[1m: sub-optimal 'sui::coin::Coin' field type[0m
+   [0m[36m┌─[0m .\sources\loot_box.move:58:19
+   [0m[36m│[0m
+[0m[36m58[0m [0m[36m│[0m         treasury: [0m[33mCoin<T>[0m,
+   [0m[36m│[0m                   [0m[33m^^^^^^^[0m [0m[33mSub-optimal 'sui::coin::Coin' field type. Using 'sui::balance::Balance' instead will be more space efficient[0m
+   [0m[36m│[0m
+   [0m[36m=[0m This warning can be suppressed with '#[allow(lint(coin_field))]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[Lint W99001][0m[1m: non-composable transfer to sender[0m
+    [0m[36m┌─[0m .\sources\loot_box.move:124:9
+    [0m[36m│[0m
+[0m[36m109[0m [0m[36m│[0m     public fun init_game<T>(ctx: &mut TxContext) {
+    [0m[36m│[0m                [0m[36m---------[0m [0m[36mReturning an object from a function, allows a caller to use the object and enables composability via programmable transactions.[0m
+    [0m[36m·[0m
+[0m[36m124[0m [0m[36m│[0m         [0m[33mtransfer::public_transfer(admin_cap, tx_context::sender(ctx))[0m;
+    [0m[36m│[0m         [0m[33m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+    [0m[36m│[0m         [0m[33m│[0m                                    [0m[36m│[0m
+    [0m[36m│[0m         [0m[33m│[0m                                    [0m[36mTransaction sender address coming from here[0m
+    [0m[36m│[0m         [0m[33mTransfer of an object to transaction sender address[0m
+    [0m[36m│[0m
+    [0m[36m=[0m This warning can be suppressed with '#[allow(lint(self_transfer))]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09012][0m[1m: unused 'mut' modifiers[0m
+    [0m[36m┌─[0m .\sources\loot_box.move:182:17
+    [0m[36m│[0m
+[0m[36m182[0m [0m[36m│[0m         let mut [0m[33mrarity[0m;
+    [0m[36m│[0m             [0m[36m---[0m [0m[33m^^^^^^[0m [0m[33mThe variable 'rarity' is never used mutably[0m
+    [0m[36m│[0m             [0m[36m│[0m    
+    [0m[36m│[0m             [0m[36mConsider removing the 'mut' declaration here[0m
+    [0m[36m│[0m
+    [0m[36m=[0m This warning can be suppressed with '#[allow(unused_let_mut)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09001][0m[1m: unused alias[0m
+   [0m[36m┌─[0m .\tests\loot_box_tests.move:10:14
+   [0m[36m│[0m
+[0m[36m10[0m [0m[36m│[0m     use sui::[0m[33mtest_utils[0m;
+   [0m[36m│[0m              [0m[33m^^^^^^^^^^[0m [0m[33mUnused 'use' of alias 'test_utils'. Consider removing it[0m
+   [0m[36m│[0m
+   [0m[36m=[0m This warning can be suppressed with '#[allow(unused_use)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09001][0m[1m: unused alias[0m
+   [0m[36m┌─[0m .\tests\loot_box_tests.move:11:58
+   [0m[36m│[0m
+[0m[36m11[0m [0m[36m│[0m     use loot_box::loot_box::{Self, GameConfig, AdminCap, [0m[33mLootBox[0m, GameItem};
+   [0m[36m│[0m                                                          [0m[33m^^^^^^^[0m [0m[33mUnused 'use' of alias 'LootBox'. Consider removing it[0m
+   [0m[36m│[0m
+   [0m[36m=[0m This warning can be suppressed with '#[allow(unused_use)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+Running Move unit tests
+[ FAIL    ] loot_box::loot_box_tests::test_burn_item
+[ FAIL    ] loot_box::loot_box_tests::test_get_item_stats
+[ PASS    ] loot_box::loot_box_tests::test_init_game
+[ FAIL    ] loot_box::loot_box_tests::test_loot_box_opened_event
+[ FAIL    ] loot_box::loot_box_tests::test_open_loot_box
+[ PASS    ] loot_box::loot_box_tests::test_purchase_insufficient_payment
+[ PASS    ] loot_box::loot_box_tests::test_purchase_loot_box
+[ PASS    ] loot_box::loot_box_tests::test_rarity_distribution
+[ FAIL    ] loot_box::loot_box_tests::test_transfer_item
+[ PASS    ] loot_box::loot_box_tests::test_update_rarity_weights
+[ PASS    ] loot_box::loot_box_tests::test_update_weights_invalid_sum
+
+Test failures:
+
+Failures in loot_box::loot_box_tests:
+
+┌── test_burn_item ──────
+│ error[E11001]: test failure
+│    ┌─ C:\Users\Ashish\.move\git\https___github_com_MystenLabs_sui_git_384b1c7ff289b32ed2664f29dc47dbc879fa43ee\crates\sui-framework\packages\sui-framework\sources\random.move:43:5
+│    │
+│ 42 │ fun create(ctx: &mut TxContext) {
+│    │     ------ In this function in sui::random
+│ 43 │     assert!(ctx.sender() == @0x0, ENotSystemAddress);
+│    │     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Test was not expected to error, but it aborted with code 0 originating in the module sui::random rooted here
+│ 
+│ 
+└──────────────────
+
+
+┌── test_get_item_stats ──────
+│ error[E11001]: test failure
+│    ┌─ C:\Users\Ashish\.move\git\https___github_com_MystenLabs_sui_git_384b1c7ff289b32ed2664f29dc47dbc879fa43ee\crates\sui-framework\packages\sui-framework\sources\random.move:43:5
+│    │
+│ 42 │ fun create(ctx: &mut TxContext) {
+│    │     ------ In this function in sui::random
+│ 43 │     assert!(ctx.sender() == @0x0, ENotSystemAddress);
+│    │     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Test was not expected to error, but it aborted with code 0 originating in the module sui::random rooted here
+│ 
+│ 
+└──────────────────
+
+
+┌── test_loot_box_opened_event ──────
+│ error[E11001]: test failure
+│    ┌─ C:\Users\Ashish\.move\git\https___github_com_MystenLabs_sui_git_384b1c7ff289b32ed2664f29dc47dbc879fa43ee\crates\sui-framework\packages\sui-framework\sources\random.move:43:5
+│    │
+│ 42 │ fun create(ctx: &mut TxContext) {
+│    │     ------ In this function in sui::random
+│ 43 │     assert!(ctx.sender() == @0x0, ENotSystemAddress);
+│    │     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Test was not expected to error, but it aborted with code 0 originating in the module sui::random rooted here
+│ 
+│ 
+└──────────────────
+
+
+┌── test_open_loot_box ──────
+│ error[E11001]: test failure
+│    ┌─ C:\Users\Ashish\.move\git\https___github_com_MystenLabs_sui_git_384b1c7ff289b32ed2664f29dc47dbc879fa43ee\crates\sui-framework\packages\sui-framework\sources\random.move:43:5
+│    │
+│ 42 │ fun create(ctx: &mut TxContext) {
+│    │     ------ In this function in sui::random
+│ 43 │     assert!(ctx.sender() == @0x0, ENotSystemAddress);
+│    │     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Test was not expected to error, but it aborted with code 0 originating in the module sui::random rooted here
+│ 
+│ 
+└──────────────────
+
+
+┌── test_transfer_item ──────
+│ error[E11001]: test failure
+│    ┌─ C:\Users\Ashish\.move\git\https___github_com_MystenLabs_sui_git_384b1c7ff289b32ed2664f29dc47dbc879fa43ee\crates\sui-framework\packages\sui-framework\sources\random.move:43:5
+│    │
+│ 42 │ fun create(ctx: &mut TxContext) {
+│    │     ------ In this function in sui::random
+│ 43 │     assert!(ctx.sender() == @0x0, ENotSystemAddress);
+│    │     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Test was not expected to error, but it aborted with code 0 originating in the module sui::random rooted here
+│ 
+│ 
+└──────────────────
+
+Test result: FAILED. Total tests: 11; passed: 6; failed: 5

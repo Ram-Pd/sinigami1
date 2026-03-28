@@ -9,6 +9,10 @@ module loot_box::loot_box {
     use sui::coin::{Self, Coin};
     use sui::event;
     use sui::random::{Self, Random};
+    use sui::object::{Self, UID, ID};
+    use sui::tx_context::{Self, TxContext};
+    use sui::transfer;
+    use sui::dynamic_field;
 
     // ===== Error Codes =====
     /// Error when payment amount is insufficient
@@ -103,12 +107,21 @@ module loot_box::loot_box {
     /// # Arguments
     /// * `ctx` - Transaction context
     public fun init_game<T>(ctx: &mut TxContext) {
-        // TODO: Implement game initialization
-        // 1. Create GameConfig with default weights and price
-        // 2. Create empty treasury Coin<T>
-        // 3. Share the GameConfig object
-        // 4. Create AdminCap and transfer to tx sender
-        abort 0
+        let config = GameConfig<T> {
+            id: object::new(ctx),
+            common_weight: DEFAULT_COMMON_WEIGHT,
+            rare_weight: DEFAULT_RARE_WEIGHT,
+            epic_weight: DEFAULT_EPIC_WEIGHT,
+            legendary_weight: DEFAULT_LEGENDARY_WEIGHT,
+            loot_box_price: DEFAULT_LOOT_BOX_PRICE,
+            treasury: coin::zero<T>(ctx),
+        };
+        transfer::share_object(config);
+        
+        let admin_cap = AdminCap {
+            id: object::new(ctx),
+        };
+        transfer::public_transfer(admin_cap, tx_context::sender(ctx));
     }
 
     /// Purchase a loot box by paying the required token amount
@@ -128,11 +141,11 @@ module loot_box::loot_box {
         payment: Coin<T>,
         ctx: &mut TxContext
     ): LootBox {
-        // TODO: Implement loot box purchase
-        // 1. Verify payment amount >= loot_box_price
-        // 2. Add payment to treasury
-        // 3. Create and return new LootBox object
-        abort 0
+        assert!(coin::value(&payment) >= config.loot_box_price, EInsufficientPayment);
+        coin::join(&mut config.treasury, payment);
+        LootBox {
+            id: object::new(ctx),
+        }
     }
 
     /// Open a loot box and receive a random GameItem
@@ -150,25 +163,72 @@ module loot_box::loot_box {
     /// * `r` - The Random object from address 0x8
     /// * `ctx` - Transaction context
     entry fun open_loot_box<T>(
-        config: &GameConfig<T>,
+        config: &mut GameConfig<T>,
         loot_box: LootBox,
         r: &Random,
         ctx: &mut TxContext
     ) {
-        // TODO: Implement loot box opening with secure randomness
-        // 
-        // CRITICAL RANDOMNESS STEPS:
-        // 1. Create a new RandomGenerator: let mut gen = random::new_generator(r, ctx);
-        // 2. Generate random number 0-99: let roll = random::generate_u8_in_range(&mut gen, 0, 99);
-        // 3. Determine rarity based on roll and weights
-        // 4. Generate power level within rarity's range
-        // 5. Create GameItem with determined stats
-        // 6. Emit LootBoxOpened event
-        // 7. Delete the loot box
-        // 8. Transfer GameItem to sender
-        //
-        // WARNING: Never pass RandomGenerator as a function argument!
-        abort 0
+        let LootBox { id: box_id } = loot_box;
+        object::delete(box_id);
+
+        let sender = tx_context::sender(ctx);
+
+        let mut pity_counter = 0u64;
+        if (dynamic_field::exists_(&config.id, sender)) {
+            pity_counter = *dynamic_field::borrow(&config.id, sender);
+        };
+
+        let mut gen = random::new_generator(r, ctx);
+        let mut rarity;
+
+        if (pity_counter >= 30) {
+            rarity = RARITY_LEGENDARY;
+            if (dynamic_field::exists_(&config.id, sender)) {
+                let counter_mut_ref: &mut u64 = dynamic_field::borrow_mut(&mut config.id, sender);
+                *counter_mut_ref = 0;
+            } else {
+                dynamic_field::add(&mut config.id, sender, 0u64);
+            };
+        } else {
+            let roll = random::generate_u8_in_range(&mut gen, 0, 99);
+            rarity = determine_rarity(roll, config.common_weight, config.rare_weight, config.epic_weight);
+            if (dynamic_field::exists_(&config.id, sender)) {
+                let counter_mut_ref: &mut u64 = dynamic_field::borrow_mut(&mut config.id, sender);
+                if (rarity == RARITY_LEGENDARY) {
+                    *counter_mut_ref = 0;
+                } else {
+                    *counter_mut_ref = *counter_mut_ref + 1;
+                };
+            } else {
+                if (rarity == RARITY_LEGENDARY) {
+                    dynamic_field::add(&mut config.id, sender, 0u64);
+                } else {
+                    dynamic_field::add(&mut config.id, sender, 1u64);
+                };
+            };
+        };
+
+        let (min_power, max_power) = get_power_range(rarity);
+        let power = random::generate_u8_in_range(&mut gen, min_power, max_power);
+        let item_name = generate_item_name(rarity);
+
+        let item = GameItem {
+            id: object::new(ctx),
+            name: item_name,
+            rarity,
+            power,
+        };
+
+        let item_id = object::id(&item);
+
+        event::emit(LootBoxOpened {
+            item_id,
+            rarity,
+            power,
+            owner: sender,
+        });
+
+        transfer::public_transfer(item, sender);
     }
 
     /// Get the stats of a GameItem
@@ -179,8 +239,7 @@ module loot_box::loot_box {
     /// # Returns
     /// * `(String, u8, u8)` - Tuple of (name, rarity, power)
     public fun get_item_stats(item: &GameItem): (std::string::String, u8, u8) {
-        // TODO: Return item's name, rarity tier, and power level
-        abort 0
+        (item.name, item.rarity, item.power)
     }
 
     /// Transfer a GameItem to another address
@@ -189,8 +248,7 @@ module loot_box::loot_box {
     /// * `item` - The GameItem to transfer
     /// * `recipient` - Address to receive the item
     public fun transfer_item(item: GameItem, recipient: address) {
-        // TODO: Transfer the item to the recipient
-        abort 0
+        transfer::public_transfer(item, recipient);
     }
 
     /// Burn (destroy) an unwanted GameItem
@@ -198,8 +256,8 @@ module loot_box::loot_box {
     /// # Arguments
     /// * `item` - The GameItem to destroy
     public fun burn_item(item: GameItem) {
-        // TODO: Delete/destroy the GameItem
-        abort 0
+        let GameItem { id, name: _, rarity: _, power: _ } = item;
+        object::delete(id);
     }
 
     /// Update the rarity weights (admin only)
@@ -222,10 +280,11 @@ module loot_box::loot_box {
         epic: u8,
         legendary: u8
     ) {
-        // TODO: Implement weight update
-        // 1. Verify weights sum to 100
-        // 2. Update config with new weights
-        abort 0
+        assert!((common as u64) + (rare as u64) + (epic as u64) + (legendary as u64) == 100, EInvalidWeights);
+        config.common_weight = common;
+        config.rare_weight = rare;
+        config.epic_weight = epic;
+        config.legendary_weight = legendary;
     }
 
     // ===== Helper Functions =====
@@ -241,12 +300,15 @@ module loot_box::loot_box {
     /// # Returns
     /// * `u8` - Rarity tier constant
     fun determine_rarity(roll: u8, common_weight: u8, rare_weight: u8, epic_weight: u8): u8 {
-        // TODO: Implement rarity determination
-        // If roll < common_weight -> RARITY_COMMON
-        // Else if roll < common_weight + rare_weight -> RARITY_RARE
-        // Else if roll < common_weight + rare_weight + epic_weight -> RARITY_EPIC
-        // Else -> RARITY_LEGENDARY
-        abort 0
+        if (roll < common_weight) {
+            RARITY_COMMON
+        } else if (roll < common_weight + rare_weight) {
+            RARITY_RARE
+        } else if (roll < common_weight + rare_weight + epic_weight) {
+            RARITY_EPIC
+        } else {
+            RARITY_LEGENDARY
+        }
     }
 
     /// Generate item name based on rarity
@@ -257,12 +319,15 @@ module loot_box::loot_box {
     /// # Returns
     /// * `String` - Generated item name
     fun generate_item_name(rarity: u8): std::string::String {
-        // TODO: Return appropriate name based on rarity
-        // Common -> "Common Sword"
-        // Rare -> "Rare Blade"
-        // Epic -> "Epic Weapon"
-        // Legendary -> "Legendary Artifact"
-        abort 0
+        if (rarity == RARITY_COMMON) {
+            std::string::utf8(b"Common Sword")
+        } else if (rarity == RARITY_RARE) {
+            std::string::utf8(b"Rare Blade")
+        } else if (rarity == RARITY_EPIC) {
+            std::string::utf8(b"Epic Weapon")
+        } else {
+            std::string::utf8(b"Legendary Artifact")
+        }
     }
 
     /// Calculate power range based on rarity
@@ -273,12 +338,15 @@ module loot_box::loot_box {
     /// # Returns
     /// * `(u8, u8)` - Tuple of (min_power, max_power)
     fun get_power_range(rarity: u8): (u8, u8) {
-        // TODO: Return power range for the given rarity
-        // Common: 1-10
-        // Rare: 11-25
-        // Epic: 26-40
-        // Legendary: 41-50
-        abort 0
+        if (rarity == RARITY_COMMON) {
+            (1, 10)
+        } else if (rarity == RARITY_RARE) {
+            (11, 25)
+        } else if (rarity == RARITY_EPIC) {
+            (26, 40)
+        } else {
+            (41, 50)
+        }
     }
 
     // ===== Getter Functions =====

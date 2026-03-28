@@ -1,6 +1,6 @@
 # 🎮 Loot Box System with On-Chain Randomness
 **Alkimi Hackathon - Problem Statement #2: Gaming**  
-*Developed by: Ashish*
+*Developed by: Team Spartans*
 
 This repository contains a production-grade Web3 loot box system built with Sui Move. It allows players to purchase mystery containers and securely roll for randomized, NFT-based in-game assets using Sui's native randomness beacon.
 
